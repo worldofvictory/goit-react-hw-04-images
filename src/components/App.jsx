@@ -6,9 +6,9 @@ import { getImages } from './Api/Api'
 import { Loader } from './Loader/Loader'
 import { Button } from "./Button/Button";
 import  Modal  from './Modal/Modal'
-import React from 'react'
 
-function App() {
+
+/*function App() {
   const [isLoadMore, setIsLoadMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [url, setUrl] = useState('')
@@ -18,7 +18,10 @@ function App() {
 
 
   useEffect(() => {
-   getImages(this.state)
+       if (query !== '' || page !== 1) {
+      setIsLoading(true);
+      setIsLoadMore(false);
+   getImages({ query, page })
         .then(({ hits: photos, totalHits, hits }) => {
           if (!photos.length) {
             return toast.error(
@@ -38,8 +41,9 @@ function App() {
         })
         .finally(() => {
           setIsLoading({ isLoading: false });
-        });
-    },
+        }); 
+    
+    } }
   
 
  [query, page])
@@ -78,14 +82,75 @@ function App() {
   )
 }
 
-export default App
+export default App*/
 
 
 
 
 
 
-   
+   const App = () => {
+  const [isLoadMore, setIsLoadMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [url, setUrl] = useState('');
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    if (query !== '' || page !== 1) {
+      setIsLoading(true);
+      setIsLoadMore(false);
+
+      getImages({ query, page })
+        .then(({ hits, totalHits }) => {
+          if (!hits.length) {
+            toast.error("Sorry, there are no images matching your search query. Please try again.");
+          }
+
+          setImages(prevImages => [...prevImages, ...hits]);
+          setIsLoadMore(page < Math.ceil(totalHits / 12));
+        })
+        .catch(error => {
+          toast.error("Oops! Something went wrong! Try reloading the page or make another choice");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [query, page]);
+
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
+  const handleSubmit = newQuery => {
+    if (query === newQuery) {
+      return;
+    }
+    setQuery(newQuery);
+    setPage(1);
+    setImages([]);
+  };
+
+  const openModal = newUrl => {
+    setUrl(newUrl);
+  };
+
+  return (
+    <div>
+      <Searchbar onSubmit={handleSubmit} />
+      {isLoading && <Loader />}
+      <ImageGallery images={images} openModal={openModal} />
+      <ToastContainer autoClose={1000} />
+      {url && <Modal closeModal={() => setUrl('')} url={url} />}
+      {isLoadMore && <Button onClick={handleLoadMore} />}
+    </div>
+  );
+};
+
+export default App;
+
  
     
  
