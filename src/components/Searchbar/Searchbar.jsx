@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import React from 'react'
 
 function Searchbar({onSubmit}) {
-  const [query, setQuery] = useState((''))
+  const [query, setQuery] = useState("")
   const handleChange = e => {
    setQuery({ query: e.target.value });
   };
