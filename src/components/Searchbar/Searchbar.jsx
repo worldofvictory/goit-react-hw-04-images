@@ -8,8 +8,9 @@ import React from 'react'
 function Searchbar({onSubmit}) {
   const [query, setQuery] = useState("")
   const handleChange = e => {
-   setQuery({ query: e.target.value });
+   setQuery(e.target.value );
   };
+  
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -17,7 +18,7 @@ function Searchbar({onSubmit}) {
           return toast.error('🦄 Введи, будь ласка назву');      
      }
    onSubmit(query);
-    setQuery({ query: '' }); }
+   setQuery(''); }
   return (
      <form className={css.form} onSubmit={handleSubmit}>
         <button type="submit" className={css.button} ><ImSearch></ImSearch></button>
